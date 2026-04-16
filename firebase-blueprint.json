@@ -1,0 +1,50 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A player in the Synth City world.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "harmonyPoints": { "type": "number", "description": "Currency earned by placing buildings and staying active." },
+        "xp": { "type": "number", "description": "Experience points for leveling up." },
+        "level": { "type": "number", "description": "Current player level." },
+        "lastActive": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "harmonyPoints", "xp", "level"]
+    },
+    "Building": {
+      "title": "Building",
+      "description": "A musical building on the grid.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "ownerName": { "type": "string" },
+        "type": { "type": "string", "enum": ["oscillator", "sequencer", "sampler", "fx", "arpeggiator", "global_fx", "road"] },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "color": { "type": "string" },
+        "params": { 
+          "type": "object",
+          "description": "Synthesis parameters like frequency, wave type, or sequence pattern."
+        },
+        "level": { "type": "number", "description": "Building upgrade level." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "ownerId", "type", "x", "y", "level"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and progression data."
+    },
+    "/buildings/{buildingId}": {
+      "schema": "Building",
+      "description": "All buildings in the shared world."
+    }
+  }
+}
