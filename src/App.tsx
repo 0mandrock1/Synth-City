@@ -183,12 +183,16 @@ export default function App() {
 
       // Move existing pulses
       pulsesRef.current.forEach(p => {
+        // If pulse is in "waiting" state, decrement wait and keep it in nextPulses
+        if (p.wait && p.wait > 0) {
+          nextPulses.push({ ...p, wait: p.wait - 1 });
+          return;
+        }
+
         // Check neighbors using grid for O(1) lookup
         const directions = [
           { dx: GRID_SIZE, dy: 0 }, { dx: -GRID_SIZE, dy: 0 },
-          { dx: 0, dy: GRID_SIZE }, { dx: 0, dy: -GRID_SIZE },
-          { dx: GRID_SIZE, dy: GRID_SIZE }, { dx: -GRID_SIZE, dy: -GRID_SIZE },
-          { dx: GRID_SIZE, dy: -GRID_SIZE }, { dx: -GRID_SIZE, dy: GRID_SIZE }
+          { dx: 0, dy: GRID_SIZE }, { dx: 0, dy: -GRID_SIZE }
         ];
 
         directions.forEach(dir => {
@@ -199,7 +203,9 @@ export default function App() {
           const neighbor = grid.get(`${nx},${ny}`);
           if (neighbor) {
             if (neighbor.type === 'road') {
-              nextPulses.push({ x: nx, y: ny, prevX: p.x, prevY: p.y });
+              // Add a small delay (wait) to road pulses so they don't travel instantly
+              // This makes a line of buildings trigger sequentially
+              nextPulses.push({ x: nx, y: ny, prevX: p.x, prevY: p.y, wait: 1 });
             } else if (neighbor.type !== 'master_clock') {
               triggeredIds.add(neighbor.id);
             }
@@ -212,9 +218,7 @@ export default function App() {
         currentBuildings.filter(b => b.type === 'master_clock').forEach(mc => {
           const directions = [
             { dx: GRID_SIZE, dy: 0 }, { dx: -GRID_SIZE, dy: 0 },
-            { dx: 0, dy: GRID_SIZE }, { dx: 0, dy: -GRID_SIZE },
-            { dx: GRID_SIZE, dy: GRID_SIZE }, { dx: -GRID_SIZE, dy: -GRID_SIZE },
-            { dx: GRID_SIZE, dy: -GRID_SIZE }, { dx: -GRID_SIZE, dy: GRID_SIZE }
+            { dx: 0, dy: GRID_SIZE }, { dx: 0, dy: -GRID_SIZE }
           ];
 
           directions.forEach(dir => {
@@ -223,7 +227,7 @@ export default function App() {
             const neighbor = grid.get(`${nx},${ny}`);
             if (neighbor) {
               if (neighbor.type === 'road') {
-                nextPulses.push({ x: nx, y: ny, prevX: mc.x, prevY: mc.y });
+                nextPulses.push({ x: nx, y: ny, prevX: mc.x, prevY: mc.y, wait: 1 });
               } else if (neighbor.type !== 'master_clock') {
                 triggeredIds.add(neighbor.id);
               }
@@ -1182,7 +1186,7 @@ export default function App() {
                         onClick={() => updateBuildingParam(selectedId, { rate: r })}
                         className={`py-2 rounded-lg text-[10px] font-bold transition-all border ${selectedBuilding.params.rate === r ? 'bg-yellow-500 border-yellow-400 text-black shadow-[0_0_15px_rgba(234,179,8,0.4)]' : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'}`}
                       >
-                        {r === '4n' ? '1/4' : r === '8n' ? '1/8' : '1/16'}
+                        {r === '4n' ? '1/4 Beat' : r === '8n' ? '1/8 Beat' : '1/16 Beat'}
                       </button>
                     ))}
                   </div>

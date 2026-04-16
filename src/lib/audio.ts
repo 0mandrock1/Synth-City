@@ -233,13 +233,20 @@ class AudioEngine {
           const rootNote = params.note || 'C3';
           const notes = this.getChordNotes(rootNote, params.chordType || 'major');
           const arpStep = this.sequencerSteps.get(id) || 0;
-          const currentNote = notes[arpStep % notes.length];
           
-          // Ensure note is valid before triggering
-          try {
-            synth.triggerAttackRelease(currentNote, '16n', time);
-          } catch (e) {
-            console.warn(`Arpeggiator failed to trigger note: ${currentNote}`, e);
+          // Arp Rate logic: 4n = trigger every 4 pulses, 8n = every 2, 16n = every 1
+          const rate = params.rate || '16n';
+          const divisor = rate === '4n' ? 4 : rate === '8n' ? 2 : 1;
+          
+          if (arpStep % divisor === 0) {
+            const noteIndex = Math.floor(arpStep / divisor) % notes.length;
+            const currentNote = notes[noteIndex];
+            
+            try {
+              synth.triggerAttackRelease(currentNote, '16n', time);
+            } catch (e) {
+              console.warn(`Arpeggiator failed to trigger note: ${currentNote}`, e);
+            }
           }
           
           this.sequencerSteps.set(id, arpStep + 1);
