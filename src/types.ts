@@ -1,4 +1,5 @@
 export type BuildingType = 
+  | 'note'
   | 'oscillator' 
   | 'sequencer' 
   | 'sampler' 
@@ -10,18 +11,23 @@ export type BuildingType =
   | 'master_clock';
 
 export type WaveType = 'sine' | 'square' | 'sawtooth' | 'triangle';
+export type ChordType = 'major' | 'minor' | 'diminished' | 'augmented' | 'maj7' | 'min7';
+export type LoopMode = 'none' | 'loop' | 'pingpong';
 
 export interface BuildingParams {
   note?: string;
+  chordType?: ChordType;
   waveType?: WaveType;
   volume?: number;
   detune?: number;
   sample?: string;
   pattern?: number[];
+  patternNotes?: string[];
   active?: boolean;
   reverb?: number;
   delay?: number;
   rate?: string; // For arpeggiator
+  loopMode?: LoopMode;
   radius?: number; // Effect radius in pixels
   powerOutput?: number;
   powerConsumption?: number;

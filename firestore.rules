@@ -49,22 +49,9 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == resource.data.ownerId;
     }
     
-    function isValidUser(data) {
-      return data.keys().hasAll(['uid', 'displayName', 'harmonyPoints', 'xp', 'level']) &&
-             data.uid is string &&
-             data.displayName is string && data.displayName.size() < 100 &&
-             data.harmonyPoints is number &&
-             data.xp is number &&
-             data.level is number;
-    }
-    
-    function isValidBuilding(data) {
-      return data.keys().hasAll(['id', 'ownerId', 'type', 'x', 'y', 'level']) &&
-             data.id is string &&
-             data.ownerId == request.auth.uid &&
-             data.type in ['oscillator', 'sequencer', 'sampler', 'fx', 'arpeggiator', 'global_fx', 'road', 'power_plant', 'master_clock'] &&
-             data.x is number && data.y is number &&
-             data.level is number;
+    function isAdmin() {
+      return isAuthenticated() &&
+             request.auth.token.email == "0mandrock1@gmail.com";
     }
 
     // ===============================================================
@@ -73,17 +60,14 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isAuthenticated();
-      allow create: if isOwner(userId) && isValidUser(request.resource.data);
-      allow update: if isOwner(userId) && isValidUser(request.resource.data) && 
-                    request.resource.data.uid == resource.data.uid;
+      allow write: if isOwner(userId) || isAdmin();
     }
     
     match /buildings/{buildingId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidBuilding(request.resource.data);
-      allow update: if isDocOwner() && isValidBuilding(request.resource.data) &&
-                    request.resource.data.ownerId == resource.data.ownerId;
-      allow delete: if isDocOwner();
+      allow create: if isAuthenticated() && (request.resource.data.ownerId == request.auth.uid || isAdmin());
+      allow update: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow delete: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isAdmin());
     }
   }
 }

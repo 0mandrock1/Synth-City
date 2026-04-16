@@ -11,10 +11,10 @@ export interface BuildingConfig {
 }
 
 export const BUILDING_CONFIGS: Record<BuildingType, BuildingConfig> = {
-  oscillator: {
-    type: 'oscillator',
-    name: 'Oscillator',
-    description: 'Basic sound source producing a continuous tone.',
+  note: {
+    type: 'note',
+    name: 'Note',
+    description: 'Triggers a single note when a pulse passes.',
     cost: 50,
     color: '#00f2ff',
     unlockLevel: 1,
@@ -22,46 +22,73 @@ export const BUILDING_CONFIGS: Record<BuildingType, BuildingConfig> = {
       waveType: 'sine',
       volume: -20,
       powerConsumption: 10,
+      radius: 300,
+      note: 'C4',
+    }
+  },
+  oscillator: {
+    type: 'oscillator',
+    name: 'Oscillator',
+    description: 'Generates a continuous drone as long as it receives pulses.',
+    cost: 150,
+    color: '#00ff66',
+    unlockLevel: 3,
+    defaultParams: {
+      waveType: 'sawtooth',
+      volume: -25,
+      powerConsumption: 20,
+      radius: 400,
+      note: 'C2',
     }
   },
   sequencer: {
     type: 'sequencer',
     name: 'Sequencer',
-    description: 'Plays a rhythmic pattern of notes.',
+    description: 'Melodic 16-step patterns using internal synthesis.',
     cost: 100,
     color: '#ff00ea',
     unlockLevel: 2,
     defaultParams: {
       waveType: 'square',
       volume: -20,
-      pattern: [1, 0, 1, 0],
+      pattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+      patternNotes: ['C3', 'C3', 'C3', 'C3', 'G3', 'G3', 'G3', 'G3', 'A3', 'A3', 'A3', 'A3', 'G3', 'G3', 'G3', 'G3'],
       powerConsumption: 15,
+      radius: 350,
+      note: 'C3',
     }
   },
   sampler: {
     type: 'sampler',
     name: 'Sampler',
-    description: 'Plays back recorded audio samples.',
+    description: 'Rhythmic 16-step patterns using audio samples.',
     cost: 150,
     color: '#7000ff',
     unlockLevel: 4,
     defaultParams: {
       volume: -15,
       powerConsumption: 12,
+      radius: 400,
+      sample: 'https://tonejs.github.io/audio/drum-samples/4OP-FM/kick.mp3',
+      loopMode: 'none',
+      pattern: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     }
   },
   arpeggiator: {
     type: 'arpeggiator',
     name: 'Arpeggiator',
-    description: 'Breaks chords into a sequence of notes.',
+    description: 'Plays chords as a sequence of notes.',
     cost: 200,
     color: '#ffcc00',
     unlockLevel: 5,
     defaultParams: {
       waveType: 'sawtooth',
       volume: -20,
-      rate: '8n',
+      rate: '16n',
+      chordType: 'major',
       powerConsumption: 20,
+      radius: 450,
+      note: 'C3',
     }
   },
   fx: {
@@ -72,7 +99,7 @@ export const BUILDING_CONFIGS: Record<BuildingType, BuildingConfig> = {
     color: '#00ffcc',
     unlockLevel: 6,
     defaultParams: {
-      radius: 250,
+      radius: 800,
       reverb: 0.4,
       delay: 0.4,
     }
@@ -85,19 +112,19 @@ export const BUILDING_CONFIGS: Record<BuildingType, BuildingConfig> = {
     color: '#00ff66',
     unlockLevel: 99, // Put in the back burner
     defaultParams: {
-      radius: 400,
+      radius: 1200,
       powerOutput: 100,
     }
   },
   master_clock: {
     type: 'master_clock',
-    name: 'Master Clock',
-    description: 'Synchronizes all sequencers within its radius.',
-    cost: 1000,
-    color: '#ff00ff',
-    unlockLevel: 9,
+    name: 'Clock',
+    description: 'Generates signal pulses that travel along roads to trigger sounds.',
+    cost: 100,
+    color: '#ff4400',
+    unlockLevel: 1,
     defaultParams: {
-      radius: 600,
+      radius: 1500,
     }
   },
   global_fx: {
