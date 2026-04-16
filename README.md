@@ -13,7 +13,7 @@ A multiplayer musical city-builder where every building is an instrument. Collab
 - **Global FX**: A unique building that affects the entire city's soundscape (Reverb/Delay).
 
 ### 🏗️ City Building & Infrastructure
-- **Roads**: Connect buildings to synchronize their timing and create complex loops.
+- **Roads**: Connect buildings to synchronize their timing. Buildings adjacent to roads receive a **50% Harmony Point boost** and extra XP per tick.
 - **Grid System**: Precise placement with snapping and visual feedback.
 - **Undo/Redo**: Full history support for building operations.
 

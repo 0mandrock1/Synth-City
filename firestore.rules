@@ -62,7 +62,7 @@ service cloud.firestore {
       return data.keys().hasAll(['id', 'ownerId', 'type', 'x', 'y', 'level']) &&
              data.id is string &&
              data.ownerId == request.auth.uid &&
-             data.type in ['oscillator', 'sequencer', 'sampler', 'fx', 'arpeggiator', 'global_fx', 'road'] &&
+             data.type in ['oscillator', 'sequencer', 'sampler', 'fx', 'arpeggiator', 'global_fx', 'road', 'power_plant', 'master_clock'] &&
              data.x is number && data.y is number &&
              data.level is number;
     }

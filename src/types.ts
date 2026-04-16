@@ -1,4 +1,14 @@
-export type BuildingType = 'oscillator' | 'sequencer' | 'sampler' | 'fx' | 'arpeggiator' | 'global_fx' | 'road';
+export type BuildingType = 
+  | 'oscillator' 
+  | 'sequencer' 
+  | 'sampler' 
+  | 'fx' 
+  | 'arpeggiator' 
+  | 'global_fx' 
+  | 'road'
+  | 'power_plant'
+  | 'master_clock';
+
 export type WaveType = 'sine' | 'square' | 'sawtooth' | 'triangle';
 
 export interface BuildingParams {
@@ -12,6 +22,9 @@ export interface BuildingParams {
   reverb?: number;
   delay?: number;
   rate?: string; // For arpeggiator
+  radius?: number; // Effect radius in pixels
+  powerOutput?: number;
+  powerConsumption?: number;
 }
 
 export interface BuildingData {
